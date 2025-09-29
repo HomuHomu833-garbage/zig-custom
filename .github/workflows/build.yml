@@ -1,0 +1,44 @@
+name: Build Zig
+run-name: Build Zig ${{inputs.version}}
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Zig Release version:"
+        default: "0.15.1"
+        required: true
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [arm-linux-musleabi, arm-linux-musleabihf, armeb-linux-musleabi, armeb-linux-musleabihf, thumb-linux-musleabi, thumb-linux-musleabihf, thumbeb-linux-musleabi, thumbeb-linux-musleabihf, aarch64-linux-musl, aarch64_be-linux-musl, loongarch64-linux-musl, mips-linux-musleabi, mips-linux-musleabihf, mipsel-linux-musleabi, mipsel-linux-musleabihf, mips64-linux-muslabin32, mips64el-linux-muslabin32, powerpc-linux-musleabi, powerpc-linux-musleabihf, powerpc64-linux-musl, powerpc64le-linux-musl, riscv32-linux-musl, riscv64-linux-musl, s390x-linux-musl, x86-linux-musl, x86_64-linux-musl, hexagon-linux-musl, loongarch64-linux-muslsf, mips64-linux-muslabi64, mips64el-linux-muslabi64, x86_64-linux-muslx32]
+    runs-on: ubuntu-24.04
+    env:
+      ROOTDIR: ${{github.workspace}}
+      ZIG_TARGET: ${{matrix.target}}
+    steps:
+      - name: Checkout zig-custom
+        uses: actions/checkout@v4
+        with:
+          path: ${{github.workspace}}
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: ${{inputs.version}}
+          use-cache: false
+
+      - name: Get and Patch zig-bootstrap
+        run: |
+          ZIG_CLANG_VERSION_CMD="zig cc --version"
+          ZIG_BOOTSTRAP_REV=$($ZIG_CLANG_VERSION_CMD | sed -E 's/.*zig-bootstrap ([a-f0-9]{40}).*/\1/' | head -n 1)
+
+          curl -LkSs https://github.com/ziglang/zig-bootstrap/archive/${ZIG_BOOTSTRAP_REV}.tar.gz | gzip -d | tar -x
+          mv zig-bootstrap-${ZIG_BOOTSTRAP_REV} zig-bootstrap
+          cp -R ${{github.workspace}}/* zig-bootstrap/zig
