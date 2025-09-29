@@ -2,11 +2,6 @@ name: Build Zig
 run-name: Build Zig ${{inputs.version}}
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Zig Release version:"
-        default: "0.15.1"
-        required: true
 
 permissions:
   contents: write
@@ -28,22 +23,15 @@ jobs:
         with:
           path: ${{github.workspace}}
 
-      - name: Setup Zig
-        uses: mlugg/setup-zig@v2
-        with:
-          version: ${{inputs.version}}
-          use-cache: false
-
       - name: Get and Patch zig-bootstrap
         run: |
-          ZIG_CLANG_VERSION_CMD="zig cc --version"
-          ZIG_BOOTSTRAP_REV=$($ZIG_CLANG_VERSION_CMD | sed -E 's/.*zig-bootstrap ([a-f0-9]{40}).*/\1/' | head -n 1)
-
-          curl -LkSs https://github.com/ziglang/zig-bootstrap/archive/${ZIG_BOOTSTRAP_REV}.tar.gz | gzip -d | tar -x
-          mv zig-bootstrap-${ZIG_BOOTSTRAP_REV} zig-bootstrap
+          ZIG_BOOTSTRAP_TARBALL_LINK=$(curl -LkSs https://ziglang.org/download | sed -n 's/.*href="\([^"]*zig-bootstrap[^"]*\.tar\.xz\)".*/\1/p'| head -n1)
+          ZIG_BOOTSTRAP_TARBALL_NAME=$(basename $ZIG_BOOTSTRAP_TARBALL_LINK | xargs basename | sed 's/\.tar\.xz$//')
+          curl -LkSs $ZIG_BOOTSTRAP_TARBALL_LINK | xz -d | tar -x
+          mv $ZIG_BOOTSTRAP_TARBALL_NAME zig-bootstrap
           cp -R ${{github.workspace}}/patches/lib zig-bootstrap/zig
 
       - name: Build Zig
         run: |
           cd zig-bootstrap
-          ./build ${ZIG_TARGET} baseline
+          ./build $ZIG_TARGET baseline
