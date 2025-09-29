@@ -14,7 +14,6 @@ jobs:
         target: [aarch64-linux-musl]
     runs-on: ubuntu-24.04
     env:
-      ROOTDIR: ${{github.workspace}}
       ZIG_TARGET: ${{matrix.target}}
     steps:
       - name: Checkout zig-custom
@@ -25,12 +24,27 @@ jobs:
       - name: Get and Patch zig-bootstrap
         run: |
           ZIG_BOOTSTRAP_TARBALL_LINK=$(curl -LkSs https://ziglang.org/download | sed -n 's/.*href="\([^"]*zig-bootstrap[^"]*\.tar\.xz\)".*/\1/p'| head -n1)
-          ZIG_BOOTSTRAP_TARBALL_NAME=$(basename $ZIG_BOOTSTRAP_TARBALL_LINK | xargs basename | sed 's/\.tar\.xz$//')
+          ZIG_BOOTSTRAP_FOLDER_NAME=$(basename $ZIG_BOOTSTRAP_TARBALL_LINK | xargs basename | sed 's/\.tar\.xz$//')
+          ZIG_TARBALL_NAME=$(echo $ZIG_BOOTSTRAP_FOLDER_NAME | sed "s/^zig-bootstrap-/zig-$ZIG_TARGET-/")
+          ZIG_VERSION_NAME=$(echo $ZIG_BOOTSTRAP_FOLDER_NAME | sed 's/.*-\([0-9].*\)/\1/')
+          echo ZIG_TARBALL_NAME=${ZIG_TARBALL_NAME} >> $GITHUB_ENV
+          echo ZIG_VERSION_NAME=${ZIG_VERSION_NAME} >> $GITHUB_ENV
           curl -LkSs $ZIG_BOOTSTRAP_TARBALL_LINK | xz -d | tar -x
-          mv $ZIG_BOOTSTRAP_TARBALL_NAME zig-bootstrap
+          mv $ZIG_BOOTSTRAP_FOLDER_NAME zig-bootstrap
           cp -R ${{github.workspace}}/patches/lib zig-bootstrap/zig
 
-      - name: Build Zig
+      - name: Build and Archive Zig
         run: |
           cd zig-bootstrap
           ./build $ZIG_TARGET baseline
+          mv out/$ZIG_TARGET-baseline ${{env.ZIG_TARBALL_NAME}}
+          tar -c ${{env.ZIG_TARBALL_NAME}} | xz -T0 -v >${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
+
+      - name: Upload release
+        uses: ncipollo/release-action@v1.16.0
+        with:
+          tag: ${{env.ZIG_TARBALL_VERSION}}
+          artifacts: ${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
+          allowUpdates: true
+          replacesArtifacts: true
+          body: ''
