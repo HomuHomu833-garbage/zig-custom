@@ -41,7 +41,7 @@ jobs:
 
           curl -LkSs https://github.com/ziglang/zig-bootstrap/archive/${ZIG_BOOTSTRAP_REV}.tar.gz | gzip -d | tar -x
           mv zig-bootstrap-${ZIG_BOOTSTRAP_REV} zig-bootstrap
-          cp -R ${{github.workspace}}/pacthes/lib zig-bootstrap/zig
+          cp -R ${{github.workspace}}/patches/lib zig-bootstrap/zig
 
       - name: Build Zig
         run: |
