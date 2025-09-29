@@ -43,7 +43,7 @@ jobs:
       - name: Upload release
         uses: ncipollo/release-action@v1.16.0
         with:
-          tag: ${{env.ZIG_TARBALL_VERSION}}
+          tag: ${{env.ZIG_VERSION_NAME}}
           artifacts: ${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
           allowUpdates: true
           replacesArtifacts: true
