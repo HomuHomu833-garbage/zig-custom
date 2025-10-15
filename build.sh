@@ -44,7 +44,7 @@ cd "$ROOTDIR/out/$ZIG_TARGET/lib"
 $ZIG build-lib \
   --name zstd \
   -target $ZIG_TARGET \
-  -mcpu=baseline
+  -mcpu=baseline \
   -fstrip -OReleaseFast \
   -lc \
   $(find "$ROOTDIR/zstd/lib" -type f \( -name "*.c" -o -name "*.S" \))
