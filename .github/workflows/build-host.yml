@@ -27,7 +27,7 @@ jobs:
           mv $ZIG_BOOTSTRAP_FOLDER_NAME zig-bootstrap
           cp -R ${{github.workspace}}/patches/lib zig-bootstrap/zig
 
-      - name: Build and Archive Zig
+      - name: Build and Archive Host Zig
         run: |
           cd zig-bootstrap
           ../build-host.sh
