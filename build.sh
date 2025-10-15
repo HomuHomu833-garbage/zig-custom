@@ -5,7 +5,7 @@ export ZIG_TARGET="$1"
 ROOTDIR="$(pwd)"
 TOOLCHAIN="$ROOTDIR/zig-as-llvm"
 ZIG_VERSION="$ZIG_VERSION_NAME"
-ZIG="$(whereis zig)"
+ZIG="$(command -v zig)"
 
 TARGET_OS_AND_ABI=${ZIG_TARGET#*-}
 TARGET_OS_CMAKE=${TARGET_OS_AND_ABI%-*}
