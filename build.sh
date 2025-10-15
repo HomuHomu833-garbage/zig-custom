@@ -30,8 +30,8 @@ cmake "$ROOTDIR/zlib" \
   -DCMAKE_SYSTEM_NAME="$TARGET_OS_CMAKE" \
   -DCMAKE_C_COMPILER="$TOOLCHAIN/bin/cc" \
   -DCMAKE_CXX_COMPILER="$TOOLCHAIN/bin/c++" \
-  -DCMAKE_C_FLAGS="-fno-sanitize=all -s -mcpu=baseline"
-  -DCMAKE_CXX_FLAGS="-fno-sanitize=all -s -mcpu=baseline"
+  -DCMAKE_C_FLAGS="-fno-sanitize=all -s -mcpu=baseline" \
+  -DCMAKE_CXX_FLAGS="-fno-sanitize=all -s -mcpu=baseline" \
   -DCMAKE_LINK_DEPENDS_USE_LINKER=OFF \
   -DCMAKE_RC_COMPILER="$TOOLCHAIN/bin/rc" \
   -DCMAKE_AR="$TOOLCHAIN/bin/ar" \
@@ -60,8 +60,8 @@ cmake "$ROOTDIR/llvm" \
   -DCMAKE_C_COMPILER="$TOOLCHAIN/bin/cc" \
   -DCMAKE_CXX_COMPILER="$TOOLCHAIN/bin/c++" \
   -DCMAKE_ASM_COMPILER="$TOOLCHAIN/bin/c++" \
-  -DCMAKE_C_FLAGS="-fno-sanitize=all -s -mcpu=baseline"
-  -DCMAKE_CXX_FLAGS="-fno-sanitize=all -s -mcpu=baseline"
+  -DCMAKE_C_FLAGS="-fno-sanitize=all -s -mcpu=baseline" \
+  -DCMAKE_CXX_FLAGS="-fno-sanitize=all -s -mcpu=baseline" \
   -DCMAKE_LINK_DEPENDS_USE_LINKER=OFF \
   -DCMAKE_RC_COMPILER="$TOOLCHAIN/bin/rc" \
   -DCMAKE_AR="$TOOLCHAIN/bin/ar" \
