@@ -34,7 +34,7 @@ jobs:
       - name: Get Zig
         run: |
           cd /usr/local/bin
-          curl -LkSs https://ziglang.org/builds/zig-x86_64-linux-ZIG_VERSION_NAME.tar.xz | sudo xz -d | sudo tar -x
+          curl -LkSs https://ziglang.org/builds/zig-x86_64-linux-$ZIG_VERSION_NAME.tar.xz | sudo xz -d | sudo tar -x
 
       - name: Build Zig
         run: |
