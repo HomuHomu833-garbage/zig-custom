@@ -26,7 +26,7 @@ jobs:
           ZIG_BOOTSTRAP_TARBALL_LINK=$(curl -LkSs https://ziglang.org/download | sed -n 's/.*href="\([^"]*zig-bootstrap[^"]*\.tar\.xz\)".*/\1/p'| head -n1)
           ZIG_BOOTSTRAP_FOLDER_NAME=$(basename $ZIG_BOOTSTRAP_TARBALL_LINK | xargs basename | sed 's/\.tar\.xz$//')
           ZIG_TARBALL_NAME=$(echo $ZIG_BOOTSTRAP_FOLDER_NAME | sed "s/^zig-bootstrap-/zig-$ZIG_TARGET-/")
-          ZIG_VERSION_NAME=$(echo $ZIG_BOOTSTRAP_FOLDER_NAME | sed 's/.*-\([0-9].*\)/\1/')
+          export ZIG_VERSION_NAME=$(echo $ZIG_BOOTSTRAP_FOLDER_NAME | sed 's/.*-\([0-9].*\)/\1/')
           echo ZIG_TARBALL_NAME=${ZIG_TARBALL_NAME} >> $GITHUB_ENV
           echo ZIG_VERSION_NAME=${ZIG_VERSION_NAME} >> $GITHUB_ENV
           curl -LkSs $ZIG_BOOTSTRAP_TARBALL_LINK | xz -d | tar -x
