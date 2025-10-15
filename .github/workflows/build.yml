@@ -19,6 +19,12 @@ jobs:
         with:
           path: ${{github.workspace}}
 
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2.0.5
+        with:
+          version: master
+          use-cache: false
+
       - name: Get and Patch zig-bootstrap
         run: |
           ZIG_BOOTSTRAP_TARBALL_LINK=$(curl -LkSs https://ziglang.org/download | sed -n 's/.*href="\([^"]*zig-bootstrap[^"]*\.tar\.xz\)".*/\1/p'| head -n1)
@@ -30,13 +36,6 @@ jobs:
           curl -LkSs $ZIG_BOOTSTRAP_TARBALL_LINK | xz -d | tar -x
           mv $ZIG_BOOTSTRAP_FOLDER_NAME zig-bootstrap
           cp -R ${{github.workspace}}/patches/lib zig-bootstrap/zig
-
-      - name: Get Zig
-        run: |
-          cd /usr/local/bin
-          curl -LkSs https://ziglang.org/builds/zig-x86_64-linux-$ZIG_VERSION_NAME.tar.xz | sudo xz -d | sudo tar -x
-          sudo mv zig-x86_64-linux-$ZIG_VERSION_NAME/* .
-          sudo rmdir zig-x86_64-linux-$ZIG_VERSION_NAME
 
       - name: Build Zig
         run: |
