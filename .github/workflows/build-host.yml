@@ -31,13 +31,13 @@ jobs:
         run: |
           cd zig-bootstrap
           ../build-host.sh
-          tar -c out/host | xz -T0 -v >${{github.workspace}}/zig-${{env.ZIG_TARBALL_NAME}}-host.tar.xz
+          tar -c out/host | xz -T0 -v >${{github.workspace}}/zig-host.tar.xz
 
       - name: Upload release
         uses: ncipollo/release-action@v1.16.0
         with:
-          tag: ${{env.ZIG_VERSION_NAME}}
-          artifacts: ${{github.workspace}}/zig-${{env.ZIG_TARBALL_NAME}}-host.tar.xz
+          tag: host
+          artifacts: ${{github.workspace}}/zig-host.tar.xz
           allowUpdates: true
           replacesArtifacts: true
           body: ''
