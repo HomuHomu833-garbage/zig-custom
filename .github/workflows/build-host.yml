@@ -1,4 +1,4 @@
-name: Build Zig
+name: Build Host Zig
 on:
   workflow_dispatch:
 
@@ -7,14 +7,8 @@ permissions:
   actions: write
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [aarch64-linux-musl]
+  build-host:
     runs-on: ubuntu-24.04
-    env:
-      ZIG_TARGET: ${{matrix.target}}
     steps:
       - name: Checkout zig-custom
         uses: actions/checkout@v4
@@ -36,15 +30,14 @@ jobs:
       - name: Build and Archive Zig
         run: |
           cd zig-bootstrap
-          ./build $ZIG_TARGET baseline
-          mv out/$ZIG_TARGET-baseline ${{env.ZIG_TARBALL_NAME}}
-          tar -c ${{env.ZIG_TARBALL_NAME}} | xz -T0 -v >${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
+          ../build-host.sh
+          tar -c out/host | xz -T0 -v >${{github.workspace}}/zig-${{env.ZIG_TARBALL_NAME}}-host.tar.xz
 
       - name: Upload release
         uses: ncipollo/release-action@v1.16.0
         with:
           tag: ${{env.ZIG_VERSION_NAME}}
-          artifacts: ${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
+          artifacts: ${{github.workspace}}/zig-${{env.ZIG_TARBALL_NAME}}-host.tar.xz
           allowUpdates: true
           replacesArtifacts: true
           body: ''
