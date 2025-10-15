@@ -42,6 +42,8 @@ jobs:
           ../build.sh ${{matrix.target}} baseline
           mv out/$ZIG_TARGET-baseline ${{env.ZIG_TARBALL_NAME}}
           tar -c ${{env.ZIG_TARBALL_NAME}} | xz -T0 -v >${{github.workspace}}/${{env.ZIG_TARBALL_NAME}}.tar.xz
+          sudo mv zig-x86_64-linux-$ZIG_VERSION_NAME/*
+          sudo rmdir zig-x86_64-linux-$ZIG_VERSION_NAME
 
       - name: Upload release
         uses: ncipollo/release-action@v1.16.0
