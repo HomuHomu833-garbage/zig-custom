@@ -5,7 +5,7 @@ TARGET="$1"
 MCPU="$2"
 ROOTDIR="$(pwd)"
 ZIG_VERSION="$ZIG_VERSION_NAME"
-ZIG="$(whereis zig)"
+ZIG="/usr/local/bin/zig"
 
 TARGET_OS_AND_ABI=${TARGET#*-}
 TARGET_OS_CMAKE=${TARGET_OS_AND_ABI%-*}
